@@ -1,3 +1,11 @@
+local function set_colorscheme(colorscheme)
+  local default = 'kanagawa'
+  local ok, _ = pcall(vim.cmd.colorscheme, colorscheme)
+  if not ok then
+    vim.cmd.colorscheme(default)
+  end
+end
+
 return {
   {
     'sainnhe/gruvbox-material',
@@ -10,5 +18,6 @@ return {
     end
   },
   { "catppuccin/nvim", name = "catppuccin", lazy = false, priority = 1000 },
-  { "folke/tokyonight.nvim", lazy = false, priority = 1000 }
+  { "folke/tokyonight.nvim", lazy = false, priority = 1000 },
+  { "rebelot/kanagawa.nvim", lazy = false, priority = 1000, config = set_colorscheme },
 }

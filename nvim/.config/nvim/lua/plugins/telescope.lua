@@ -13,12 +13,14 @@ return {
     },
     pickers = {
       git_files = { recurse_submodules = true },
+      colorscheme = { enable_preview = true },
     }
   },
   config = function(_, opts)
     require('telescope').setup(opts)
     local builtin = require('telescope.builtin')
     vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+    vim.keymap.set('n', '<leader>sch', builtin.colorscheme, {})
     vim.keymap.set('n', '<C-p>', builtin.git_files, {})
     vim.keymap.set('n', '<leader>fw', function()
       local word = vim.fn.expand('<cword>')
