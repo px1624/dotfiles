@@ -1,5 +1,5 @@
 local function set_colorscheme(colorscheme)
-  local default = 'kanagawa'
+  local default = 'catppuccin'
   local ok, _ = pcall(vim.cmd.colorscheme, colorscheme)
   if not ok then
     vim.cmd.colorscheme(default)
