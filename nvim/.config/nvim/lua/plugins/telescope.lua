@@ -9,6 +9,12 @@ return {
       file_ignore_patterns = {
         '.git',
         'node_modeules'
+      },
+      path_display = {
+        truncate = 3,
+        filename_first = {
+          reverse_directories = false
+        }
       }
     },
     pickers = {
