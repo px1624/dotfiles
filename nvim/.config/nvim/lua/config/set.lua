@@ -10,6 +10,10 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 
+-- wildmenu
+vim.opt.wildmenu = true
+vim.opt.wildmode = 'longest:full,full'
+
 -- search
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
