@@ -31,4 +31,7 @@ vim.opt.updatetime = 50
 vim.opt.colorcolumn = "80"
 
 -- netrw
-vim.g.netrw_liststyle = 3
+vim.g.netrw_liststyle = 1
+
+-- clipboard
+vim.opt.clipboard = "unnamedplus"

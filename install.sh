@@ -63,6 +63,7 @@ function install_nvim() {
     local base_url="https://github.com/neovim/neovim/releases/latest/download"
     local latest_nvim="nvim-linux-x86_64.tar.gz"
     local latest_url="${base_url}/${latest_nvim}"
+    echo "Installing nvim..."
     curl -sL -o "/tmp/${latest_nvim}" "${latest_url}"
     rm -rf "${install_prefix}/${latest_nvim}"
     if [[ -L "${install_prefix}/bin/nvim" ]]; then
@@ -148,7 +149,7 @@ while [[ ( $# -gt 0 ) ]]; do
     esac
 done
 
-debug "Apps to be installed: ${install_list}"
+debug "Apps to be installed: ${install_list[@]}"
 
 install
 
