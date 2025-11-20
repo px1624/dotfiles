@@ -6,6 +6,8 @@ vim.g.maplocalleader = '\\'
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.wrap = false
+vim.opt.list = true
+vim.opt.listchars:append("space:·")
 
 -- indents
 vim.opt.tabstop = 4
@@ -28,7 +30,7 @@ vim.opt.scrolloff = 8
 
 vim.opt.updatetime = 50
 
-vim.opt.colorcolumn = "80"
+vim.opt.colorcolumn = "100"
 
 -- netrw
 vim.g.netrw_liststyle = 1
