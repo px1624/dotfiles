@@ -1,0 +1,21 @@
+{
+    "workbench.colorTheme": "Catppuccin Mocha",
+    "editor.detectIndentation" : false,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "[cpp]" : {
+        "editor.tabSize": 2,
+    },
+    "[c]": {
+        "editor.tabSize": 2,
+    },
+    "editor.indentSize": "tabSize",
+    "editor.fontFamily": "'Monaspace Neon', monospace",
+    "editor.inlineSuggest.fontFamily": "'Monaspace Krypton', monospace",
+    "editor.fontLigatures": "'calt', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'ss09', 'ss10', 'liga'",
+    "terminal.integrated.fontFamily": "'Monaspace Neon', monospace",
+    "terminal.integrated.fontLigatures.enabled": true,
+    "terminal.integrated.fontLigatures.featureSettings": "\"calt\", \"ss01\", \"ss02\", \"ss03\", \"ss04\", \"ss05\", \"ss06\", \"ss07\", \"ss08\", \"ss09\", \"ss10\", \"liga\"",
+    "C_Cpp.clang_format_fallbackStyle": "Google",
+    "diffEditor.ignoreTrimWhitespace": false,
+}
