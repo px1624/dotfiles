@@ -49,6 +49,8 @@ function install_rg() {
     local artifact="ripgrep-${latest_tag}-$(uname -m)-unknown-linux-musl.tar.gz"
     local url="${base_url}/download/${artifact}"
 
+    local out_file=""
+    local out_dir=""
     download out_file "${url}"
     extract out_dir "${out_file}"
     find "${out_dir}" -name rg -type f -print -quit | xargs -I {} cp {} "${install_dst}"
@@ -57,20 +59,25 @@ function install_rg() {
 }
 
 function install_stow() {
-    local base_url="https://ftp.gnu.org/gnu/stow"
-    local latest_stow="stow-latest.tar.gz"
-    local latest_url="${base_url}/${latest_stow}"
-    echo "Installing stow..."
-    curl -sL -o "/tmp/${latest_stow}" "${latest_url}"
-    local extract_dir="/tmp/$(tar -xvf /tmp/${latest_stow} -C /tmp | cut -f1 -d'/' | sort | uniq)"
-    debug "Extract location: ${extract_dir}"
-    cd "${extract_dir}" && {
+    local url="https://ftp.gnu.org/gnu/stow/stow-latest.tar.gz"
+    local install_dst="${install_prefix}/bin/stow"
+
+    echo "==> Installing stow..."
+    if [[ ${clean} -eq 0 && -e "${install_dst}" ]]; then
+        echo "Error: destination ${install_dst} exists, use --clean to overwrite"
+    fi
+
+    local out_file=""
+    local out_dir=""
+    download out_file "${url}"
+    extract out_dir "${out_file}"
+    cd "$(find ${out_dir} -maxdepth 1 -mindepth 1 -type d | head -1)" && {
         ./configure --prefix="${install_prefix}" > /dev/null
         make > /dev/null && make install prefix="${install_prefix}" > /dev/null
         cd -;
     }
+    rm -rf "${out_file}" "${out_dir}"
     echo "Successfully installed stow"
-    return 0
 }
 
 function install_nvim() {
@@ -79,13 +86,14 @@ function install_nvim() {
     local nvim_install_dir="${install_prefix}/${nvim_file%%.*}"
 
     echo "==> Installing nvim..."
-    download out_file "${url}"
-
     if [[ ${clean} -eq 0 && ( -e "${install_prefix}/bin/nvim" || -e "${nvim_install_dir}" ) ]]; then
         echo "Error: existing installation found, use --clean to overwrite"
-	return 1
+        return 1
     fi
-    
+
+    local out_file=""
+    local out_dir=""
+    download out_file "${url}"
     rm -rf "${nvim_install_dir}"
     extract out_dir "${out_file}" "${install_prefix}"
     cd "${install_prefix}/bin" && {
@@ -104,11 +112,14 @@ function install_treesitter_cli() {
         echo "Error: destination ${install_dst} exists, use --clean to overwrite"
         return 1
     fi
+
+
+    local out_file=""
+    local out_dir=""
     download out_file "${url}"
     extract out_dir "${out_file}"
     cp -f "${out_dir}/tree-sitter" "${install_dst}"
-    rm -r "${out_file}"
-    rm -rf "${out_dir}"
+    rm -rf "${out_file}" "${out_dir}"
     echo "Successfully installed treesitter-cli"
 }
 

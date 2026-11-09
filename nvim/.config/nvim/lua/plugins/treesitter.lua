@@ -17,7 +17,8 @@ return {
       "css",
       "cuda",
       "cpp",
-      "python"
+      "python",
+      "bash"
     }
   end
 }
