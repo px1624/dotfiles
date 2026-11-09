@@ -13,33 +13,47 @@ function debug() {
     return 0
 }
 
+function download() {
+    local -n tmp_file="$1"
+    local url="$2"
+    tmp_file=$(mktemp)
+
+    debug "Downloading: ${url}..."
+    curl -L "${url}" -o "${tmp_file}";
+}
+
+function extract() {
+    local -n dst="$1"
+    local src="$2"
+    dst="${3:-$(mktemp -d)}"
+
+    debug "Extracting to: ${dst}..."
+    if file --mime-type "${src}" 2>/dev/null | grep -q "application/zip"; then
+        unzip -q "${src}" -d "${dst}"
+    else
+        # Handles .tar.gz, .tar.xz, .tar.bz2, or plain .tar automatically
+        tar -xf "${src}" -C "${dst}"
+    fi
+}
+
 function install_rg() {
-    local install_dir="${install_prefix}/bin"
-    local target_file="${install_dir}/rg"
-    if [[ -e "${target_file}" && ${clean} -eq 0 ]]; then
-        echo "Target exists: ${target_file}"
-        echo "Skip rg installation"
-        return 0
+    local install_dst="${install_prefix}/bin/rg"
+
+    echo "==> Installing rg..."
+    if [[ ${clean} -eq 0 && -e "${install_dst}" ]]; then
+        echo "Error: destination ${install_dst} exists, use --clean to overwrite"
     fi
 
-    echo "Installing rg..."
-    local base_url="https://github.com/BurntSushi/ripgrep/releases"
-    local latest_tag=$(basename $(curl -sLI -o /dev/null -w %{url_effective} "${base_url}/latest"))
+    local base_url="https://github.com/BurntSushi/ripgrep/releases/latest"
+    local latest_tag=$(basename $(curl -sLI -o /dev/null -w %{url_effective} "${base_url}"))
     local artifact="ripgrep-${latest_tag}-$(uname -m)-unknown-linux-musl.tar.gz"
-    local latest_url="${base_url}/download/${latest_tag}/${artifact}"
+    local url="${base_url}/download/${artifact}"
 
-    # Clean existing installation
-    if [[ ${clean} -eq 1 && -e "${target_file}" ]]; then
-        echo "Clean existing installation: ${target_file}"
-        rm "${target_file}"
-    fi
-
-    echo "Latest rg: ${latest_url}"
-    if [[ ! -d "${install_dir}" ]]; then mkdir -p "${install_dir}"; fi
-    curl -sL "${latest_url}" | tar -xvz -C "${install_dir}" --strip-component=1 --wildcards */rg > /dev/null
+    download out_file "${url}"
+    extract out_dir "${out_file}"
+    find "${out_dir}" -name rg -type f -print -quit | xargs -I {} cp {} "${install_dst}"
+    rm -rf "${out_file}" "${out_dir}"
     echo "Successfully installed rg"
-
-    return 0
 }
 
 function install_stow() {
@@ -60,20 +74,42 @@ function install_stow() {
 }
 
 function install_nvim() {
-    local base_url="https://github.com/neovim/neovim/releases/latest/download"
-    local latest_nvim="nvim-linux-x86_64.tar.gz"
-    local latest_url="${base_url}/${latest_nvim}"
-    echo "Installing nvim..."
-    curl -sL -o "/tmp/${latest_nvim}" "${latest_url}"
-    rm -rf "${install_prefix}/${latest_nvim}"
-    if [[ -L "${install_prefix}/bin/nvim" ]]; then
-        unlink "${install_prefix}/bin/nvim"
+    local nvim_file="nvim-linux-x86_64.tar.gz"
+    local url="https://github.com/neovim/neovim/releases/latest/download/${nvim_file}"
+    local nvim_install_dir="${install_prefix}/${nvim_file%%.*}"
+
+    echo "==> Installing nvim..."
+    download out_file "${url}"
+
+    if [[ ${clean} -eq 0 && ( -e "${install_prefix}/bin/nvim" || -e "${nvim_install_dir}" ) ]]; then
+        echo "Error: existing installation found, use --clean to overwrite"
+	return 1
     fi
-    tar -C "${install_prefix}" -xzf "/tmp/${latest_nvim}"
+    
+    rm -rf "${nvim_install_dir}"
+    extract out_dir "${out_file}" "${install_prefix}"
     cd "${install_prefix}/bin" && {
-        ln -s "../${latest_nvim%%.*}/bin/nvim" nvim
+        ln -sf "../${nvim_file%%.*}/bin/nvim" nvim
         cd -
     }
+    rm -rf "${out_file}"
+    echo "Successfully installed nvim"
+}
+
+function install_treesitter_cli() {
+    local url="https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-cli-linux-x64.zip"
+    local install_dst="${install_prefix}/bin/tree-sitter"
+    echo "==> Installing treesitter-cli..."
+    if [[ ${clean} -eq 0 && -e ${install_dst} ]]; then
+        echo "Error: destination ${install_dst} exists, use --clean to overwrite"
+        return 1
+    fi
+    download out_file "${url}"
+    extract out_dir "${out_file}"
+    cp -f "${out_dir}/tree-sitter" "${install_dst}"
+    rm -r "${out_file}"
+    rm -rf "${out_dir}"
+    echo "Successfully installed treesitter-cli"
 }
 
 function install() {
@@ -88,6 +124,9 @@ function install() {
             nvim)
                 install_nvim
                 ;;
+            treesitter-cli)
+                install_treesitter_cli
+                ;;
             *)
                 echo "Unrecognized app: ${app}"
                 break
@@ -99,7 +138,7 @@ function install() {
 }
 
 # errexit - exit shell on error
-# pipefail - set retuen value to the last command with non-zero status
+# pipefail - set return value to the last command with non-zero status
 # noclobber - prevent overwriting existing file when redirecting output
 # nounset - treat unset variable as errors
 set -o errexit -o pipefail -o noclobber -o nounset
