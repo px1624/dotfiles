@@ -2,6 +2,9 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = '\\'
 
+-- mode
+vim.opt.showmode = false
+
 -- line
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -21,8 +24,11 @@ vim.opt.wildmenu = true
 vim.opt.wildmode = 'longest:full,full'
 
 -- search
-vim.opt.hlsearch = false
+vim.opt.hlsearch = true
 vim.opt.incsearch = true
+-- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 
 vim.opt.termguicolors = true
 
@@ -35,5 +41,11 @@ vim.opt.colorcolumn = "100"
 -- netrw
 vim.g.netrw_liststyle = 1
 
+
 -- clipboard
-vim.opt.clipboard = "unnamedplus"
+-- use builtin OSC 52 clipboard provider
+vim.g.clipboard = "osc52"
+-- Sync clipboard between OS and Neovim.
+--  Schedule the setting after `UiEnter` because it can increase startup-time.
+--  See `:help 'clipboard'`
+vim.schedule(function() vim.opt.clipboard = 'unnamedplus' end)
