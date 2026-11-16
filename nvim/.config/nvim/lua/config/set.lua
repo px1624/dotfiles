@@ -26,7 +26,7 @@ vim.opt.wildmode = 'longest:full,full'
 -- search
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
+-- case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
@@ -41,11 +41,21 @@ vim.opt.colorcolumn = "100"
 -- netrw
 vim.g.netrw_liststyle = 1
 
+-- diagnostics
+vim.diagnostic.config {
+  update_in_insert = false,
+  severity_sort = true,
+  float = { border = 'rounded', source = 'if_many' },
+  underline = { severity = { min = vim.diagnostic.severity.WARN } },
+
+  virtual_text = true, -- Text shows up at the end of the line
+  virtual_lines = false, -- Text shows up underneath the line, with virtual lines
+}
 
 -- clipboard
 -- use builtin OSC 52 clipboard provider
 vim.g.clipboard = "osc52"
--- Sync clipboard between OS and Neovim.
---  Schedule the setting after `UiEnter` because it can increase startup-time.
---  See `:help 'clipboard'`
+-- sync clipboard between OS and Neovim.
+-- schedule the setting after `UiEnter` because it can increase startup-time.
+-- see `:help 'clipboard'`
 vim.schedule(function() vim.opt.clipboard = 'unnamedplus' end)
