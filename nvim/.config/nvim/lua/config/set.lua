@@ -50,12 +50,41 @@ vim.diagnostic.config {
 
   virtual_text = true, -- Text shows up at the end of the line
   virtual_lines = false, -- Text shows up underneath the line, with virtual lines
+
+  jump = {
+    on_jump = function (_, bufnr)
+      vim.diagnostic.open_float {
+        bufnt = bufnr,
+        scope = 'cursor',
+        focus = false,
+      }
+    end
+  }
 }
 
 -- clipboard
--- use builtin OSC 52 clipboard provider
-vim.g.clipboard = "osc52"
+local function paste_from_unnamed_reg()
+  return function (_)
+    local content = vim.fn.getreg('"')
+    return vim.split(content, '\n')
+  end
+end
 -- sync clipboard between OS and Neovim.
 -- schedule the setting after `UiEnter` because it can increase startup-time.
 -- see `:help 'clipboard'`
-vim.schedule(function() vim.opt.clipboard = 'unnamedplus' end)
+vim.schedule(function()
+  vim.opt.clipboard:append("unnamedplus")
+  if (os.getenv('SSH_TTY') ~= nil) then
+    vim.g.clipboard = {
+      name = 'OSC 52',
+      copy = {
+        ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+        ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+      },
+      paste = {
+        ['+'] = paste_from_unnamed_reg(),
+        ['*'] = paste_from_unnamed_reg(),
+      },
+    }
+  end
+end)
