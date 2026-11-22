@@ -1,7 +1,7 @@
 -- Enable faster startup by caching compiled Lua modules
 vim.loader.enable()
 
-require('config.set')
+require('config.options')
+require('pack.loader').setup()
 require('config.autocmd')
-require('config.lazy')
 require('config.remap')

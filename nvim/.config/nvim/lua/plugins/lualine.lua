@@ -1,8 +1,9 @@
 return {
-  {
-    'nvim-lualine/lualine.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
-    opts = {
+  src = 'https://github.com/nvim-lualine/lualine.nvim',
+  priority = 20,
+  config = function()
+    local ll = require('lualine')
+    ll.setup {
       options = {
         theme = 'catppuccin-mocha',
       },
@@ -15,5 +16,5 @@ return {
         }
       }
     }
-  },
+  end
 }

@@ -1,44 +1,55 @@
--- leader
+-- leader keys
 vim.g.mapleader = ' '
 vim.g.maplocalleader = '\\'
 
--- mode
-vim.opt.showmode = false
+-- don't show mode, status bar already does that
+vim.o.showmode = false
 
--- line
-vim.opt.number = true
-vim.opt.relativenumber = true
-vim.opt.wrap = false
-vim.opt.list = true
-vim.opt.listchars:append("space:·")
+-- relative line number
+vim.o.number = true
+vim.o.relativenumber = true
+vim.o.wrap = false
+-- show invisible chars
+vim.o.list = true
+vim.opt.listchars = { tab = '» ', trail = '·', space = '·', nbsp = '␣' }
 
--- indents
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
-vim.opt.smartindent = true
+-- column width display for tab
+vim.o.tabstop = 4
+-- spaces to advance per tab/backspace
+vim.o.softtabstop = 4
+-- columns to shift for >>, <<, = operations, matches tabstop
+vim.o.shiftwidth = 4
+-- expand tabs to spaces
+vim.o.expandtab = true
+-- syntax aware indent
+vim.o.smartindent = true
 
--- wildmenu
-vim.opt.wildmenu = true
-vim.opt.wildmode = 'longest:full,full'
+-- auto complete on tab
+vim.o.wildmenu = true
+-- longest matching subsequence on first press, cycle through on subsequence presses
+vim.o.wildmode = 'longest:full,full'
 
--- search
-vim.opt.hlsearch = true
-vim.opt.incsearch = true
+-- highlght search
+vim.o.hlsearch = true
+-- show partial search results while typing
+vim.o.incsearch = true
 -- case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
+vim.o.ignorecase = true
+vim.o.smartcase = true
 
-vim.opt.termguicolors = true
+-- enables 24-bit true color
+vim.o.termguicolors = true
 
-vim.opt.scrolloff = 8
+-- lines to keep visible above and below while scrolling
+vim.o.scrolloff = 8
 
-vim.opt.updatetime = 50
+-- time (ms) to wait for CursorHold event and swap file writes
+vim.o.updatetime = 50
 
-vim.opt.colorcolumn = "100"
+-- vertical line guide
+vim.o.colorcolumn = "100"
 
--- netrw
+-- netrw one file per line with size and timestamp
 vim.g.netrw_liststyle = 1
 
 -- diagnostics

@@ -1,24 +1,34 @@
 return {
-  "nvim-treesitter/nvim-treesitter",
-  lazy = false,
-  build = ":TSUpdate",
-  branch = "main",
-  config = function ()
-    local ts = require("nvim-treesitter")
-    ts.setup{}
-    ts.install {
-      "c",
-      "lua",
-      "vim",
-      "vimdoc",
-      "query",
-      "javascript",
-      "html",
-      "css",
-      "cuda",
-      "cpp",
-      "python",
-      "bash"
+  src = 'https://github.com/nvim-treesitter/nvim-treesitter',
+  priority = 10,
+  version = 'main',
+  config = function()
+    local ts = require('nvim-treesitter')
+    ts.setup { install_dir = vim.fn.stdpath('data') .. '/site' }
+    ts.install { 
+      'lua',
+      'c',
+      'cpp',
+      'cuda',
+      'vim',
+      'vimdoc',
+      'query',
+      'javascript',
+      'html',
+      'css',
+      'python',
+      'bash'
     }
+
+    vim.api.nvim_create_autocmd('FileType', {
+      group = vim.api.nvim_create_augroup('treesitter-hightlight', { clear = true }),
+      callback = function(args)
+        if args.match == 'netrw' then
+          return
+        end
+        local lang = vim.treesitter.language.get_lang(args.match)
+        ts.install({ lang }):await(function() vim.treesitter.start(args.buf) end)
+      end,
+    })
   end
 }
