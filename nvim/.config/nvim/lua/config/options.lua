@@ -39,6 +39,8 @@ vim.o.smartcase = true
 
 -- enables 24-bit true color
 vim.o.termguicolors = true
+-- dark mode
+vim.o.background = 'dark'
 
 -- lines to keep visible above and below while scrolling
 vim.o.scrolloff = 8

@@ -21,13 +21,16 @@ return {
     }
 
     vim.api.nvim_create_autocmd('FileType', {
-      group = vim.api.nvim_create_augroup('treesitter-hightlight', { clear = true }),
+      desc = 'Enable treesitter highlighting on filetype change, install parser if missing',
+      group = vim.api.nvim_create_augroup('plugin: treesitter hightlight', { clear = true }),
       callback = function(args)
         if args.match == 'netrw' then
           return
         end
         local lang = vim.treesitter.language.get_lang(args.match)
-        ts.install({ lang }):await(function() vim.treesitter.start(args.buf) end)
+        if lang and vim.tbl_contains(ts.get_available(), lang) then
+          ts.install({ lang }):await(function() vim.treesitter.start(args.buf) end)
+        end
       end,
     })
   end
