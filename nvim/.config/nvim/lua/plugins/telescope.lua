@@ -45,5 +45,15 @@ return {
       builtin.find_files{ hidden = true }
     end)
     vim.keymap.set('n', '<leader>vh', builtin.help_tags, {})
+
+    -- disable autocomplete on telescope prompt
+    vim.api.nvim_create_autocmd('FileType', {
+      desc = 'Turn off autocomplete on telescope prompt',
+      pattern = 'TelescopePrompt',
+      group = vim.api.nvim_create_augroup('plugin: telescope no autocomplete', { clear = true }),
+      callback = function()
+        vim.bo.autocomplete = false
+      end,
+    })
   end
 }
