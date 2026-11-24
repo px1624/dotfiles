@@ -75,6 +75,17 @@ vim.diagnostic.config {
   }
 }
 
+-- autocomplete
+vim.o.autocomplete = true
+-- popup for single item, don't insert automatically
+vim.opt.completeopt = { 'menuone', 'noinsert', 'noselect', 'fuzzy', 'popup' }
+-- completion source buffers (.)current (w)window (b)loaded (o)omnifunc
+vim.o.complete = '.,w,b,o'
+vim.o.autocompletedelay = 250
+-- popup height and border
+vim.o.pumheight = 8
+vim.o.pumborder = 'rounded'
+
 -- clipboard
 local function paste_from_unnamed_reg()
   return function (_)

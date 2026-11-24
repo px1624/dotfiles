@@ -15,7 +15,7 @@ function M.read_specs(dir)
       type(spec) == "table" and type(spec.src) == "string",
       file .. " must return a table with a string `src`"
     )
-    spec.file_name = vim.fn.fnamemodify(path, ":t")
+    spec.file_name = vim.fn.fnamemodify(file, ":t")
     table.insert(specs, spec)
   end
   return specs
@@ -38,13 +38,13 @@ function M.setup()
     packs[#packs + 1] = { src = spec.src, name = spec.name, version = spec.version}
   end
   vim.pack.add(packs, { confirm = false })
-  
+
   for _, spec in ipairs(specs) do
     if (type(spec.config) == 'function') then
       local ok, err = pcall(spec.config)
       if not ok then
         vim.notify(
-            "Failed to call config on plugin: " .. spec.file_name " error: " .. err,
+            "Failed to call config on plugin: " .. spec.file_name .. " error: " .. err,
             vim.log.levels.ERROR
         )
       end
